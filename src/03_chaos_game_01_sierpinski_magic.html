@@ -5,6 +5,8 @@
 		<meta charset="utf-8">
 		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="common.js"></script>
+		<script src="keyboard.js"></script>
 		<style type="text/css">
 		body {
 			overflow:hidden;
@@ -17,45 +19,7 @@
 	<body>
 		<canvas id="room"></canvas>
 		<script>
-		function randomInt(min, max) 
-		{
-			return Math.floor(Math.random() * (max - min + 1)) + min;
-		}
-		
-		var paused = true;
-		var speed = 1000;
-		var intervalId;
-		
-		document.addEventListener('keydown', function(event) 
-		{
-			switch(event.keyCode) 
-			{
-				case 32: // Space: Toggle pause.
-					paused = !paused; 
-					break;
-					
-				case 107: // Plus key: Speed up.
-					if (speed > 10) 
-					{ 
-						speed -= 10; 
-						clearInterval(intervalId);
-						intervalId = intervalId = setInterval(draw, speed);
-					} 
-					break;
-					
-				case 107: // Minus key: Speed down;
-					if (speed < 500) 
-					{ 
-						speed += 10; 
-						clearInterval(intervalId);
-						intervalId = intervalId = setInterval(draw, speed);
-					} 
-					break;
-			}
-		});
-		
-		const WHITE = "rgb(255,255,255)";
-		const RED = "rgb(255,0,0)";
+		speed = 1000;
 		
 		const bounds = [
 			[$(window).width() * 0.6, $(window).height() * 0.15], 
@@ -66,32 +30,6 @@
 		var context2d = document.getElementById("room").getContext("2d");
 		var xCurrent = randomInt(0, $(window).width());
 		var yCurrent = randomInt(0, $(window).height());
-		
-		function randomColor()
-		{
-			red = Math.floor((Math.random() * 256));
-			green = Math.floor((Math.random() * 256));
-			blue = Math.floor((Math.random() * 256));
-			
-			return "#" + red.toString(16) + green.toString(16) + blue.toString(16);
-		}
-		
-		function drawPoint(pointX, pointY, size, color)
-		{
-			context2d.fillStyle = color;
-			context2d.beginPath();
-			context2d.arc(pointX, pointY, size, 0, Math.PI * 2.0, true);
-			context2d.closePath();
-			context2d.fill();
-		}
-		
-		function fractionWay(startX, startY, newX, newY, fraction)
-		{
-			result = [];
-			result[0] = startX + ((newX - startX) * fraction);
-			result[1] = startY + ((newY - startY) * fraction);
-			return result;
-		}
 		
 		function draw()
 		{
@@ -109,7 +47,7 @@
 			context2d.fillStyle = "#332211";
 			room.width = $(window).width();
 			room.height = $(window).height();
-			context2d.fillRect(0,0,room.width,room.height);
+			context2d.fillRect(0, 0, room.width, room.height);
 			
 			for (var i=0; i < bounds.length; i++)
 				drawPoint(bounds[i][0], bounds[i][1], 10, WHITE);
