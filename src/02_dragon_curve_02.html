@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Increasingly, the mathematics will demand the courage to face its implications.</title>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<style type="text/css">
+		body {
+			overflow:hidden;
+			padding:0;
+			margin:0;
+		}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="room"></canvas>
+		<script>
+		direction = {
+			NORTH : 1,
+			EAST : 2,
+			SOUTH : 4,
+			WEST : 8
+		}
+		
+		const LINE_LENGTH = 8;
+		var generator = [];
+		var currentDirection = direction.WEST;
+		var context2d = document.getElementById("room").getContext("2d");
+		var iterator = 0;
+		var xCurrent = $(window).width() / 2;
+		var yCurrent = $(window).height() / 2;
+		var mov = [ 0, 0, 1, -1, 1, -1, 1, 0 ]; 
+		var i = 0;
+		xCurrent += mov[i++];
+		yCurrent += mov[i++];
+		
+		function generate(iterationCount)
+		{
+			generator.push(1);
+
+			for (var y = 0; y < iterationCount - 1; y++)
+			{
+				var temp = generator.slice();
+				temp.push(1);
+				
+				for (var bi = generator.length-1; bi >= 0; bi--) 
+					temp.push(generator[bi] == 1 ? 0 : 1);
+
+				generator = temp.slice();
+			}
+		}
+		
+		function draw()
+		{
+			if (typeof(iterator) == "undefined")
+				iterator = 0;
+				
+			context2d.beginPath();
+			context2d.moveTo(xCurrent, yCurrent);
+			switch (currentDirection)
+			{
+			case direction.NORTH:
+				if (generator[iterator]) 
+				{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
+				else 
+				{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }				
+				break;
+			case direction.EAST:
+				if (generator[iterator]) 
+				{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
+				else 
+				{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
+				break;
+			case direction.SOUTH:
+				if (generator[iterator]) 
+				{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }
+				else 
+				{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
+				break;
+			case direction.WEST:
+				if (generator[iterator]) 
+				{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
+				else 
+				{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
+			}
+			
+			red = Math.floor((Math.random() * 256));
+			green = Math.floor((Math.random() * 256));
+			blue = Math.floor((Math.random() * 256));
+			context2d.strokeStyle = "#" + red.toString(16) + green.toString(16) + blue.toString(16);
+			context2d.lineTo(xCurrent, yCurrent);
+			context2d.stroke();
+			
+			if (iterator < generator.length)
+				iterator++;
+		}
+		
+		(function($){
+			generate(22);
+			context2d.fillStyle = "#332211";
+			room.width = $(window).width();
+			room.height = $(window).height();
+			context2d.fillRect(0,0,room.width,room.height);
+			setInterval(draw, 35);
+		 })(jQuery); 
+		</script>
+  </body>
+</html>
