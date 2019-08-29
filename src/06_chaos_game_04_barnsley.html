@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Increasingly, the mathematics will demand the courage to face its implications.</title>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<style type="text/css">
+		body {
+			overflow:hidden;
+			padding:0;
+			margin:0;
+		}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="room"></canvas>
+		<script>
+		function randomInt(min, max) 
+		{
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		
+		var paused = true;
+		var speed = 50;
+		var intervalId;
+		
+		document.addEventListener('keydown', function(event) 
+		{
+			switch(event.keyCode) 
+			{
+				case 32: // Space: Toggle pause.
+					paused = !paused; 
+					break;
+					
+				case 107: // Plus key: Speed up.
+					if (speed > 10) 
+					{ 
+						speed -= 10; 
+						clearInterval(intervalId);
+						intervalId = intervalId = setInterval(draw, speed);
+					} 
+					break;
+					
+				case 107: // Minus key: Speed down;
+					if (speed < 500) 
+					{ 
+						speed += 10; 
+						clearInterval(intervalId);
+						intervalId = intervalId = setInterval(draw, speed);
+					} 
+					break;
+			}
+		});
+		
+		const WHITE = "rgb(255,255,255)";
+		const RED = "rgb(255,0,0)";
+		const DARK_GREEN = "rgb(0, 160,0)";
+		
+		var context2d = document.getElementById("room").getContext("2d");
+		var xCurrent = 0;
+		var yCurrent = 0;
+		
+		function randomColor()
+		{
+			red = Math.floor((Math.random() * 256));
+			green = Math.floor((Math.random() * 256));
+			blue = Math.floor((Math.random() * 256));
+			
+			return "#" + red.toString(16) + green.toString(16) + blue.toString(16);
+		}
+		
+		function drawPoint(pointX, pointY, size, color)
+		{
+			context2d.fillStyle = color;
+			context2d.beginPath();
+			context2d.arc(pointX, pointY, size, 0, Math.PI * 2.0, true);
+			context2d.closePath();
+			context2d.fill();
+		}
+		
+		function newCoordinatesOne(xCurrent, yCurrent)
+		{
+			result = [];
+			result[0] = 0;
+			result[1] = 0.16 * yCurrent;
+			return result;
+		}
+		
+		function newCoordinatesTwo(xCurrent, yCurrent)
+		{
+			result = [];
+			result[0] =  0.85 * xCurrent + 0.04 * yCurrent;
+			result[1] = -0.04 * xCurrent + 0.85 * yCurrent + 1.6;
+			return result;
+		}
+		
+		function newCoordinatesThree(xCurrent, yCurrent)
+		{
+			result = [];
+			result[0] = 0.20 * xCurrent - 0.26 * yCurrent
+			result[1] = 0.23 * xCurrent + 0.22 * yCurrent + 1.6;
+			return result;
+		}
+		
+		function newCoordinatesFour(xCurrent, yCurrent)
+		{
+			result = [];
+			result[0] = -0.15 * xCurrent + 0.28 * yCurrent;
+			result[1] =  0.26 * xCurrent + 0.24 * yCurrent + 0.44;
+			return result;
+		}
+		
+		function draw()
+		{
+			if (!paused)
+			{
+				var chance = Math.random();
+				if (chance < 0.01)
+				{
+					newCoordinates = newCoordinatesOne(xCurrent, yCurrent);
+				}
+				else if (chance < 0.86)
+				{
+					newCoordinates = newCoordinatesTwo(xCurrent, yCurrent);
+				}
+				else if (chance < 0.93)
+				{
+					newCoordinates = newCoordinatesThree(xCurrent, yCurrent);
+				}
+				else
+				{
+					newCoordinates = newCoordinatesFour(xCurrent, yCurrent);
+				}
+				
+				xCurrent = newCoordinates[0];
+				yCurrent = newCoordinates[1];
+				drawPoint(xCurrent * 65 + $(window).width() / 2, $(window).height() - yCurrent * 65, 1, DARK_GREEN);
+			}
+		}
+		
+		(function($){
+			context2d.fillStyle = "#332211";
+			room.width = $(window).width();
+			room.height = $(window).height();
+			context2d.fillRect(0, 0, room.width, room.height);
+			intervalId = setInterval(draw, speed);
+		 })(jQuery); 
+		</script>
+  </body>
+</html>
