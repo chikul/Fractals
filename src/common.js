@@ -2,10 +2,14 @@
 * Common functions and constants.
 */
 
-const WHITE = "rgb(255,255,255)";
-const RED = "rgb(255,0,0)";
-const GREEN = "rgb(0,255,0)";
-const DARK_GREEN = "rgb(0, 128,0)";
+const WHITE = "rgb(255, 255, 255)";
+const RED = "rgb(255, 0, 0)";
+const DARK_RED = "rgb(128, 0, 0)";
+const GREEN = "rgb(0, 255, 0)";
+const DARK_GREEN = "rgb(0, 128, 0)";
+const BLUE = "rgb(0, 0, 255)";
+const DARK_BLUE = "rgb(0, 0, 128)";
+const ORANGE = "rgb(255, 128, 0)";
 
 
 function randomInt(min, max) 

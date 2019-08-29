@@ -15,7 +15,7 @@ document.addEventListener('keydown', function(event)
             break;
             
         case 107: // Plus key: Speed up.
-            if (speed > 10) 
+            if (speed >= 10) 
             { 
                 speed -= 10; 
                 clearInterval(intervalId);
@@ -24,7 +24,7 @@ document.addEventListener('keydown', function(event)
             break;
             
         case 109: // Minus key: Speed down;
-            if (speed < 500) 
+            if (speed < 500)
             { 
                 speed += 10; 
                 clearInterval(intervalId);
