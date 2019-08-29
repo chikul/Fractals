@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+* Added keyboard handlers to Dragon Curve.
+* Added auto-scaling to Barnsley Fern.
+
 ### Updated
 
 * Moved coomon functions and constants to a separate file.
