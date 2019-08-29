@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Increasingly, the mathematics will demand the courage to face its implications.</title>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="common.js"></script>
+		<script src="keyboard.js"></script>
+		<style type="text/css">
+		body {
+			overflow:hidden;
+			padding:0;
+			margin:0;
+		}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="room"></canvas>
+		<script>
+		speed = 10;
+		
+		const bounds = [
+			[$(window).width() * 0.5, $(window).height() * 0.1], 
+			[($(window).width() - $(window).height() * 0.7) / 2, $(window).height() * 0.35], 
+			[($(window).width() - $(window).height() * 0.5) / 2 + $(window).height() * 0.6, $(window).height() * 0.35], 
+			[($(window).width() - $(window).height() * 0.45) / 2, $(window).height() * 0.8], 
+			[($(window).width() - $(window).height() * 0.5) / 2 + $(window).height() * 0.45, $(window).height() * 0.8]
+			];
+			
+		var context2d = document.getElementById("room").getContext("2d");
+		var xCurrent = randomInt(0, $(window).width());
+		var yCurrent = randomInt(0, $(window).height());
+		
+		function draw()
+		{
+			if (!paused)
+			{
+				var index =  Math.floor(Math.random() * bounds.length);
+				newCoordinates = fractionWay(xCurrent, yCurrent, bounds[index][0], bounds[index][1], 0.6);
+				xCurrent = newCoordinates[0];
+				yCurrent = newCoordinates[1];
+				drawPoint(xCurrent, yCurrent, 1, randomColor());
+			}
+		}
+		
+		(function($){
+			context2d.fillStyle = "#332211";
+			room.width = $(window).width();
+			room.height = $(window).height();
+			context2d.fillRect(0,0,room.width,room.height);
+			
+			for (var i=0; i < bounds.length; i++)
+				drawPoint(bounds[i][0], bounds[i][1], 10, WHITE);
+			
+			drawPoint(xCurrent, yCurrent, 5, RED);
+			intervalId = setInterval(draw, speed);
+		 })(jQuery); 
+		</script>
+  </body>
+</html>
