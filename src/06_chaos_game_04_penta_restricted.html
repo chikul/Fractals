@@ -19,7 +19,7 @@
 	<body>
 		<canvas id="room"></canvas>
 		<script>
-		speed = 10;
+		speed = 0;
 		
 		const bounds = [
 			[$(window).width() * 0.5, $(window).height() * 0.1], 
@@ -32,16 +32,34 @@
 		var context2d = document.getElementById("room").getContext("2d");
 		var xCurrent = randomInt(0, $(window).width());
 		var yCurrent = randomInt(0, $(window).height());
+		var previousIndex = -1;
+
+		function getNextIndex()
+		{
+			var index = Math.floor(Math.random() * bounds.length);
+
+			while (index == previousIndex)
+				index = Math.floor(Math.random() * bounds.length);
+
+			previousIndex = index;
+
+			return index;
+		}
 		
 		function draw()
 		{
+			// A point inside a pentagon repeatedly jumps half of the distance towards a randomly chosen vertex, 
+			// but the currently chosen vertex cannot be the same as the previously chosen vertex.
 			if (!paused)
 			{
-				var index =  Math.floor(Math.random() * bounds.length);
-				newCoordinates = fractionWay(xCurrent, yCurrent, bounds[index][0], bounds[index][1], 0.6);
-				xCurrent = newCoordinates[0];
-				yCurrent = newCoordinates[1];
-				drawPoint(xCurrent, yCurrent, 1, randomColor());
+				for (var i=0; i < 100; i++)
+				{
+					var index =  getNextIndex();
+					newCoordinates = fractionWay(xCurrent, yCurrent, bounds[index][0], bounds[index][1], 0.5);
+					xCurrent = newCoordinates[0];
+					yCurrent = newCoordinates[1];
+					drawPoint(xCurrent, yCurrent, 1, LIGHT_GRAY);
+				}
 			}
 		}
 		
@@ -49,12 +67,7 @@
 			context2d.fillStyle = "#332211";
 			room.width = $(window).width();
 			room.height = $(window).height();
-			context2d.fillRect(0,0,room.width,room.height);
-			
-			for (var i=0; i < bounds.length; i++)
-				drawPoint(bounds[i][0], bounds[i][1], 10, WHITE);
-			
-			drawPoint(xCurrent, yCurrent, 5, RED);
+			context2d.fillRect(0, 0, room.width, room.height);
 			intervalId = setInterval(draw, speed);
 		 })(jQuery); 
 		</script>

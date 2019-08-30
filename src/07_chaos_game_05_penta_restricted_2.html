@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Increasingly, the mathematics will demand the courage to face its implications.</title>
+		<meta charset="utf-8">
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="common.js"></script>
+		<script src="keyboard.js"></script>
+		<style type="text/css">
+		body {
+			overflow:hidden;
+			padding:0;
+			margin:0;
+		}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="room"></canvas>
+		<script>
+		speed = 10;
+		
+		const bounds = [
+			[$(window).width() * 0.5, $(window).height() * 0.1], 
+			[($(window).width() - $(window).height() * 0.7) / 2, $(window).height() * 0.35], 
+			[($(window).width() - $(window).height() * 0.5) / 2 + $(window).height() * 0.6, $(window).height() * 0.35], 
+			[($(window).width() - $(window).height() * 0.45) / 2, $(window).height() * 0.8], 
+			[($(window).width() - $(window).height() * 0.5) / 2 + $(window).height() * 0.45, $(window).height() * 0.8]
+			];
+			
+		var context2d = document.getElementById("room").getContext("2d");
+		var xCurrent = randomInt(0, $(window).width());
+		var yCurrent = randomInt(0, $(window).height());
+		var indexHistory = []
+
+
+		function isValid(index, previousIndex)
+		{
+			if (previousIndex == index)
+				return false;
+				
+			switch (index)
+			{
+				case 0: if (previousIndex == 1 || previousIndex == 4) return false; else return true;
+				case 1: if (previousIndex == 2 || previousIndex == 0) return false; else return true;
+				case 2: if (previousIndex == 3 || previousIndex == 1) return false; else return true;
+				case 3: if (previousIndex == 4 || previousIndex == 2) return false; else return true;
+				case 4: if (previousIndex == 0 || previousIndex == 3) return false; else return true;
+			}
+		}
+
+		function getNextIndex()
+		{
+			// Currently chosen vertex cannot neighbor the previously chosen vertex if the two previously chosen vertices are the same.
+			var index = Math.floor(Math.random() * bounds.length);
+
+			if (indexHistory.length > 1 && indexHistory[0] == indexHistory[1])
+			{
+				var previousIndex = indexHistory[0];
+				console.log("Click " + indexHistory + " " + index)
+
+				while (!isValid(index, previousIndex)) // Math.abs(previousIndex - index) == 1 || (index == 0 && previousIndex == bounds.length -1)
+					index = Math.floor(Math.random() * bounds.length);
+					console.log("Trying " + index)
+
+				console.log("Finally " + index)
+			}
+
+			
+			indexHistory.push(index);
+
+			if (indexHistory.length > 2)
+				indexHistory.shift();
+
+			return index;
+		}
+		
+		function draw()
+		{
+			if (!paused)
+			{
+				for (var i=0; i < 100; i++)
+				{
+					var index =  getNextIndex();
+					newCoordinates = fractionWay(xCurrent, yCurrent, bounds[index][0], bounds[index][1], 0.5);
+					xCurrent = newCoordinates[0];
+					yCurrent = newCoordinates[1];
+					drawPoint(xCurrent, yCurrent, 1, LIGHT_GRAY);
+				}
+			}
+		}
+		
+		(function($){
+			context2d.fillStyle = "#332211";
+			room.width = $(window).width();
+			room.height = $(window).height();
+			context2d.fillRect(0, 0, room.width, room.height);
+			intervalId = setInterval(draw, speed);
+		 })(jQuery); 
+		</script>
+  </body>
+</html>

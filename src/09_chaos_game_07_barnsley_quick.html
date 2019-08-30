@@ -19,27 +19,47 @@
 	<body>
 		<canvas id="room"></canvas>
 		<script>
-		speed = 1000;
-		
-		const bounds = [
-			[$(window).width() * 0.6, $(window).height() * 0.15], 
-			[$(window).width() * 0.2, $(window).height() * 0.85], 
-			[$(window).width() * 0.8, $(window).height() * 0.85]
-			];
-			
+		speed = 50;
+				
 		var context2d = document.getElementById("room").getContext("2d");
-		var xCurrent = randomInt(0, $(window).width());
-		var yCurrent = randomInt(0, $(window).height());
+		var xCurrent = 0;
+		var yCurrent = 0;
+		var fernScale = Math.floor($(window).height() / 10)
 		
 		function draw()
 		{
 			if (!paused)
 			{
-				var index =  Math.floor(Math.random() * bounds.length);
-				newCoordinates = fractionWay(xCurrent, yCurrent, bounds[index][0], bounds[index][1], 0.5);
-				xCurrent = newCoordinates[0];
-				yCurrent = newCoordinates[1];
-				drawPoint(xCurrent, yCurrent, 2, randomColor());
+				for (var i=0; i < 300; i++)
+				{
+					var chance = Math.random();
+					var newX, newY;
+
+					if (chance < 0.01)
+					{
+						newX = 0;
+						newY = 0.16 * yCurrent;
+					}
+					else if (chance < 0.86)
+					{
+						newX =  0.85 * xCurrent + 0.04 * yCurrent;
+						newY = -0.04 * xCurrent + 0.85 * yCurrent + 1.6;
+					}
+					else if (chance < 0.93)
+					{
+						newX = 0.20 * xCurrent - 0.26 * yCurrent
+						newY = 0.23 * xCurrent + 0.22 * yCurrent + 1.6;
+					}
+					else
+					{
+						newX = -0.15 * xCurrent + 0.28 * yCurrent;
+						newY =  0.26 * xCurrent + 0.24 * yCurrent + 0.44;
+					}
+					
+					xCurrent = newX;
+					yCurrent = newY;
+					drawPoint(xCurrent * fernScale + $(window).width() / 2, $(window).height() - yCurrent * fernScale, 1, DARK_GREEN);
+				}
 			}
 		}
 		
@@ -48,11 +68,6 @@
 			room.width = $(window).width();
 			room.height = $(window).height();
 			context2d.fillRect(0, 0, room.width, room.height);
-			
-			for (var i=0; i < bounds.length; i++)
-				drawPoint(bounds[i][0], bounds[i][1], 10, WHITE);
-			
-			drawPoint(xCurrent, yCurrent, 5, RED);
 			intervalId = setInterval(draw, speed);
 		 })(jQuery); 
 		</script>

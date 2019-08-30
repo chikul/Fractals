@@ -5,6 +5,8 @@
 		<meta charset="utf-8">
 		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="common.js"></script>
+		<script src="keyboard.js"></script>
 		<style type="text/css">
 		body {
 			overflow:hidden;
@@ -17,6 +19,9 @@
 	<body>
 		<canvas id="room"></canvas>
 		<script>
+		paused = false;
+		speed = 35
+
 		direction = {
 			NORTH : 1,
 			EAST : 2,
@@ -54,47 +59,47 @@
 		
 		function draw()
 		{
-			if (typeof(iterator) == "undefined")
-				iterator = 0;
-				
-			context2d.beginPath();
-			context2d.moveTo(xCurrent, yCurrent);
-			switch (currentDirection)
+			if (!paused)
 			{
-			case direction.NORTH:
-				if (generator[iterator]) 
-				{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
-				else 
-				{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }				
-				break;
-			case direction.EAST:
-				if (generator[iterator]) 
-				{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
-				else 
-				{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
-				break;
-			case direction.SOUTH:
-				if (generator[iterator]) 
-				{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }
-				else 
-				{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
-				break;
-			case direction.WEST:
-				if (generator[iterator]) 
-				{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
-				else 
-				{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
+				if (typeof(iterator) == "undefined")
+					iterator = 0;
+					
+				context2d.beginPath();
+				context2d.moveTo(xCurrent, yCurrent);
+				switch (currentDirection)
+				{
+				case direction.NORTH:
+					if (generator[iterator]) 
+					{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
+					else 
+					{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }				
+					break;
+				case direction.EAST:
+					if (generator[iterator]) 
+					{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
+					else 
+					{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
+					break;
+				case direction.SOUTH:
+					if (generator[iterator]) 
+					{ xCurrent -= LINE_LENGTH; currentDirection = direction.WEST; }
+					else 
+					{ xCurrent += LINE_LENGTH; currentDirection = direction.EAST; }
+					break;
+				case direction.WEST:
+					if (generator[iterator]) 
+					{ yCurrent -= LINE_LENGTH; currentDirection = direction.NORTH; }
+					else 
+					{ yCurrent += LINE_LENGTH; currentDirection = direction.SOUTH; }
+				}
+				
+				context2d.strokeStyle = randomColor();
+				context2d.lineTo(xCurrent, yCurrent);
+				context2d.stroke();
+				
+				if (iterator < generator.length)
+					iterator++;
 			}
-			
-			red = Math.floor((Math.random() * 256));
-			green = Math.floor((Math.random() * 256));
-			blue = Math.floor((Math.random() * 256));
-			context2d.strokeStyle = "#" + red.toString(16) + green.toString(16) + blue.toString(16);
-			context2d.lineTo(xCurrent, yCurrent);
-			context2d.stroke();
-			
-			if (iterator < generator.length)
-				iterator++;
 		}
 		
 		(function($){
@@ -102,8 +107,8 @@
 			context2d.fillStyle = "#332211";
 			room.width = $(window).width();
 			room.height = $(window).height();
-			context2d.fillRect(0,0,room.width,room.height);
-			setInterval(draw, 35);
+			context2d.fillRect(0, 0, room.width, room.height);
+			intervalId = setInterval(draw, speed);
 		 })(jQuery); 
 		</script>
   </body>
