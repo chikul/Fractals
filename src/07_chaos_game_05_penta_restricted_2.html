@@ -19,7 +19,7 @@
 	<body>
 		<canvas id="room"></canvas>
 		<script>
-		speed = 0;
+		speed = 10;
 		
 		const bounds = [
 			[$(window).width() * 0.5, $(window).height() * 0.1], 
@@ -32,24 +32,52 @@
 		var context2d = document.getElementById("room").getContext("2d");
 		var xCurrent = randomInt(0, $(window).width());
 		var yCurrent = randomInt(0, $(window).height());
-		var previousIndex = -1;
+		var indexHistory = []
+
+
+		function isValid(index, previousIndex)
+		{
+			if (previousIndex == index)
+				return false;
+				
+			switch (index)
+			{
+				case 0: if (previousIndex == 1 || previousIndex == 4) return false; else return true;
+				case 1: if (previousIndex == 2 || previousIndex == 0) return false; else return true;
+				case 2: if (previousIndex == 3 || previousIndex == 1) return false; else return true;
+				case 3: if (previousIndex == 4 || previousIndex == 2) return false; else return true;
+				case 4: if (previousIndex == 0 || previousIndex == 3) return false; else return true;
+			}
+		}
 
 		function getNextIndex()
 		{
+			// Currently chosen vertex cannot neighbor the previously chosen vertex if the two previously chosen vertices are the same.
 			var index = Math.floor(Math.random() * bounds.length);
 
-			while (index == previousIndex)
-				index = Math.floor(Math.random() * bounds.length);
+			if (indexHistory.length > 1 && indexHistory[0] == indexHistory[1])
+			{
+				var previousIndex = indexHistory[0];
+				console.log("Click " + indexHistory + " " + index)
 
-			previousIndex = index;
+				while (!isValid(index, previousIndex)) // Math.abs(previousIndex - index) == 1 || (index == 0 && previousIndex == bounds.length -1)
+					index = Math.floor(Math.random() * bounds.length);
+					console.log("Trying " + index)
+
+				console.log("Finally " + index)
+			}
+
+			
+			indexHistory.push(index);
+
+			if (indexHistory.length > 2)
+				indexHistory.shift();
 
 			return index;
 		}
 		
 		function draw()
 		{
-			// A point inside a pentagon repeatedly jumps half of the distance towards a randomly chosen vertex, 
-			// but the currently chosen vertex cannot be the same as the previously chosen vertex.
 			if (!paused)
 			{
 				for (var i=0; i < 100; i++)

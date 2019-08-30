@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+* Restricted penta chaos game versions.
 * Added keyboard handlers to Dragon Curve.
 * Added auto-scaling to Barnsley Fern.
 

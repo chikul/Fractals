@@ -3,6 +3,8 @@
 */
 
 const WHITE = "rgb(255, 255, 255)";
+const LIGHT_GRAY = "rgb(192, 192, 192)";
+const GRAY = "rgb(128, 128, 128)";
 const RED = "rgb(255, 0, 0)";
 const DARK_RED = "rgb(128, 0, 0)";
 const GREEN = "rgb(0, 255, 0)";
